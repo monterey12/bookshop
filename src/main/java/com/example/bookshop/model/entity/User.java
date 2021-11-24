@@ -27,7 +27,7 @@ public class User {
 
     private String createdBy;
 
-    private LocalDateTime updateAt;
+    private LocalDateTime updatedAt;
 
     private String updatedBy;
 }
