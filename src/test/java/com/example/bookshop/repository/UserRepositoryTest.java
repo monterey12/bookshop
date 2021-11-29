@@ -21,49 +21,57 @@ public class UserRepositoryTest extends StudyApplicationTests {
     private UserRepository userRepository;
 
     @Test
-    public void create(){
-        // String sql = insert into user (%s, %s, %d ) value (account, email, age);
+    public void create() {
+        String account = "Test01";
+        String password = "Test01";
+        String status = "REGISTERED";
+        String email = "Test01@gmail.com";
+        String phoneNumber = "010-1111-2222";
+        LocalDateTime registeredAt = LocalDateTime.now();
+        LocalDateTime createdAt = LocalDateTime.now();
+        String createdBy = "AdminServer";
+
+
         User user = new User();
-        user.setAccount("TestUser03");
-        user.setEmail("TestUser03@gmail.com");
-        user.setPhoneNumber("010-1111-3333");
-        user.setCreatedAt(LocalDateTime.now());
-        user.setCreatedBy("TestUser3");
+        user.setAccount(account);
+        user.setPassword(password);
+        user.setStatus(status);
+        user.setEmail(email);
+        user.setPhoneNumber(phoneNumber);
+        user.setRegisteredAt(registeredAt);
+        user.setCreatedAt(createdAt);
+        user.setCreatedBy(createdBy);
 
         User newUser = userRepository.save(user);
-        System.out.println("new user : "+newUser);
+        Assertions.assertNotNull(newUser);
 
     }
 
     @Test
     @Transactional
-    public void read(){
+    public void read() {
 
-        // select * from user where id = ?
-        Optional<User> user = userRepository.findByAccount("TestUser03");
+        User user = userRepository.findFirstByPhoneNumberOrderByIdDesc("010-1111-2222");
 
-//        Optional<User> user = userRepository.findById(1L);
-//
-////        user.ifPresent(selectUser -> {
-////            System.out.println("user : " + selectUser);
-////            System.out.println("email :"+selectUser.getEmail());
-////
-////        });
-        user.ifPresent(selectUser ->{
-            selectUser.getOrderDetailList().stream().forEach(detail ->{
-                Item item = detail.getItem();
-                System.out.println(item);
+        if(user != null) {
+            user.getOrderGroupList().stream().forEach(orderGroup -> {
+
+                System.out.println("수령인 : " + orderGroup.getRevName());
+                System.out.println("수령지 : " + orderGroup.getRevAddress());
+                System.out.println("총금액 : " + orderGroup.getTotalPrice());
+                System.out.println("총수량 : " + orderGroup.getTotalQuantity());
             });
-        });
+        }
+        Assertions.assertNotNull(user);
 
     }
 
     @Test
     @Transactional
-    public void update(){
+    public void update() {
         Optional<User> user = userRepository.findById(2L);
 
-        user.ifPresent(selectUser ->{
+        user.ifPresent(selectUser -> {
             selectUser.setAccount("TestUser02");
             selectUser.setEmail("TestUser02@gmail.com");
             selectUser.setPhoneNumber("010-1111-2222");
@@ -76,12 +84,12 @@ public class UserRepositoryTest extends StudyApplicationTests {
 
     @Test
     @Transactional
-    public void delete(){
+    public void delete() {
         Optional<User> user = userRepository.findById(3L);
 
         Assertions.assertTrue(user.isPresent());
 
-        user.ifPresent(selectUser->{
+        user.ifPresent(selectUser -> {
             userRepository.delete(selectUser);
         });
 
