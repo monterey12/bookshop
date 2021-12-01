@@ -1,6 +1,7 @@
 package com.example.bookshop.controller;
 
 import com.example.bookshop.model.SearchParam;
+import com.example.bookshop.model.network.Header;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -30,6 +31,12 @@ public class GetController {
         System.out.println(searchParam.getPage());
 
         return searchParam;
+    }
 
+    @GetMapping("/header")
+    public Header getHeader(){
+
+        // {"resultCode: "OK, "description : OK"}
+        return Header.builder().resultCode("OK").description("OK").build();
     }
 }
